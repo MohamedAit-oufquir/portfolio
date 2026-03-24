@@ -21,7 +21,3 @@ Tech Stack
 Prerequisites
 - Node.js (v14 or higher)
 - npm
-
-# portfolio
-# portfolio
-# portfolio

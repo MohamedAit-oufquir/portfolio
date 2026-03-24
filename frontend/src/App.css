@@ -1,0 +1,15 @@
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex-grow: 1;
+}
+
+.text-center { text-align: center; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+.border-t { border-top-width: 1px; }
+.text-secondary { color: var(--text-secondary); }
+.text-sm { font-size: 0.875rem; }
