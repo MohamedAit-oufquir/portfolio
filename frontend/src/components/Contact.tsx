@@ -58,13 +58,13 @@ const Contact = () => {
                 <p className="text-secondary text-sm">New York City, NY</p>
               </div>
             </div>
-            <div className="contact-item">
+            {/* <div className="contact-item">
               <Phone className="accent-text" />
               <div>
                 <p className="font-medium">Phone</p>
                 <p className="text-secondary text-sm">+1 (123) 456-7890</p>
               </div>
-            </div>
+            // </div> */}
 
             <div className="social-links mt-8">
               <a href="https://github.com/MohamedAit-oufquir" className="social-link" target="_blank" rel="noopener noreferrer">
