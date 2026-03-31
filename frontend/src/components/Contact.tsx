@@ -103,7 +103,7 @@ const Contact = () => {
                     </>
                   )}
                 </button>
-                {state.errors && state.errors.length > 0 && (
+                {state.errors && (
                   <p className="status-msg error mt-4">Failed to send message. Please try again.</p>
                 )}
               </>
