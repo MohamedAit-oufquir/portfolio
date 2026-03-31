@@ -1,41 +1,8 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
-import { Send, Mail, MapPin, Phone, Github, Linkedin, Twitter } from 'lucide-react';
+import { useForm, ValidationError } from '@formspree/react';
+import { Send, Mail, MapPin, Github, Linkedin } from 'lucide-react';
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
-  const [status, setStatus] = useState<'' | 'sending' | 'success' | 'error'>('');
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setStatus('sending');
-
-    try {
-      const response = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setStatus('success');
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setStatus('error');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      setStatus('error');
-    }
-  };
+  const [state, handleSubmit] = useForm('xvzqojvj');
 
   return (
     <section id="contact" className="section">
@@ -48,7 +15,7 @@ const Contact = () => {
               <Mail className="accent-text" />
               <div>
                 <p className="font-medium">Email</p>
-                <p className="text-secondary text-sm">mohamedoufquir.dev@gmail.com</p>
+                <p className="text-secondary text-sm">oufquir9@gmail.com</p>
               </div>
             </div>
             <div className="contact-item">
@@ -58,13 +25,6 @@ const Contact = () => {
                 <p className="text-secondary text-sm">New York City, NY</p>
               </div>
             </div>
-            {/* <div className="contact-item">
-              <Phone className="accent-text" />
-              <div>
-                <p className="font-medium">Phone</p>
-                <p className="text-secondary text-sm">+1 (123) 456-7890</p>
-              </div>
-            // </div> */}
 
             <div className="social-links mt-8">
               <a href="https://github.com/MohamedAit-oufquir" className="social-link" target="_blank" rel="noopener noreferrer">
@@ -77,65 +37,77 @@ const Contact = () => {
           </div>
 
           <form className="contact-form glass p-8" onSubmit={handleSubmit}>
-            <div className="form-grid">
-              <div className="form-group">
-                <label htmlFor="name">Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  placeholder="your Name"
-                />
+            {state.succeeded ? (
+              <div className="status-msg success">
+                <p>Message sent successfully! I'll get back to you soon.</p>
+                <button 
+                  type="button" 
+                  className="btn btn-primary mt-4" 
+                  onClick={() => window.location.reload()}
+                >
+                  Send another message
+                </button>
               </div>
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="your.email@example.com"
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <label htmlFor="subject">Subject</label>
-              <input
-                type="text"
-                id="subject"
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                required
-                placeholder="What is this about?"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="message">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                rows={5}
-                placeholder="Your Message..."
-              ></textarea>
-            </div>
-            <button type="submit" className="btn btn-primary w-full" disabled={status === 'sending'}>
-              {status === 'sending' ? 'Sending...' : (
-                <>
-                  Send Message <Send size={18} style={{ marginLeft: '8px' }} />
-                </>
-              )}
-            </button>
-            {status === 'success' && <p className="status-msg success mt-4">Message sent successfully!</p>}
-            {status === 'error' && <p className="status-msg error mt-4">Failed to send message. Please try again.</p>}
+            ) : (
+              <>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="name">Name</label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      placeholder="Your Name"
+                    />
+                    <ValidationError prefix="Name" field="name" errors={state.errors} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      placeholder="your.email@example.com"
+                    />
+                    <ValidationError prefix="Email" field="email" errors={state.errors} />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="subject">Subject</label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    required
+                    placeholder="What is this about?"
+                  />
+                  <ValidationError prefix="Subject" field="subject" errors={state.errors} />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="message">Message</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    rows={5}
+                    placeholder="Your Message..."
+                  ></textarea>
+                  <ValidationError prefix="Message" field="message" errors={state.errors} />
+                </div>
+                <button type="submit" className="btn btn-primary w-full" disabled={state.submitting}>
+                  {state.submitting ? 'Sending...' : (
+                    <>
+                      Send Message <Send size={18} style={{ marginLeft: '8px' }} />
+                    </>
+                  )}
+                </button>
+                {state.errors && state.errors.length > 0 && (
+                  <p className="status-msg error mt-4">Failed to send message. Please try again.</p>
+                )}
+              </>
+            )}
           </form>
         </div>
       </div>
@@ -211,8 +183,9 @@ const Contact = () => {
         .status-msg {
           text-align: center;
           font-weight: 500;
-          padding: 0.5rem;
-          border-radius: 4px;
+          padding: 1.5rem;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.03);
         }
         .status-msg.success { color: #10b981; }
         .status-msg.error { color: #ef4444; }
